@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "binance-downloader"
+version = "0.1.0"
+description = ""
+authors = ["Pierpaolo Pantone <24alsecondo@gmail.com>"]
+readme = "README.md"
+packages = [{include = "binance_downloader"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ccxt = "^3.0.61"
+pytz = "^2023.3"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+isort = "^5.12.0"
+ipdb = "^0.13.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
