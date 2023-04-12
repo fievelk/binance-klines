@@ -19,7 +19,11 @@ class OHLCVDownloaderException(Exception):
 
 
 class BinanceOHLCVDownloader:
-    """Downloader for OHLCV klines."""
+    """Downloader for OHLCV klines.
+
+    Args:
+        limit (int, optional): Number of klines to fetch per request. Defaults to 500.
+    """
 
     def __init__(self, limit: int = 500) -> None:
         self.limit = limit
@@ -27,8 +31,20 @@ class BinanceOHLCVDownloader:
 
         self._instantiate_exchange()
 
-    async def fetch_ohlcv(self, symbol, start_date, end_date, timeframe="1h"):
+    async def fetch_ohlcv(
+        self,
+        symbol: str,
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
+        timeframe: str = "1h",
+    ):
         """Download OHCLV data (klines).
+
+        Args:
+            symbol (str): Symbol to download (e.g.: BTC/USDT). Must be a valid symbol for Binance.
+            start_date (datetime.datetime): Start date (UTC timezone)
+            end_date (datetime.datetime): End date (UTC timezone)
+            timeframe (str, optional): Timeframe to download. Defaults to "1h".
 
         Yields:
             List[int]: a list of OHLCV lines. Structure of each kline:
@@ -42,10 +58,10 @@ class BinanceOHLCVDownloader:
                 ]
 
         """
-        assert start_date.tzinfo == pytz.utc
-        assert end_date.tzinfo == pytz.utc
+        assert start_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
+        assert end_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
 
-        # Convert UTC dates to timestamps in milliseconds
+        # Convert UTC dates to timestamps in milliseconds (needed by Binance API)
         start_date_timestamp = int(start_date.timestamp()) * 1000  # Milliseconds
         end_date_timestamp = int(end_date.timestamp()) * 1000  # Milliseconds
 
