@@ -86,6 +86,10 @@ class BinanceOHLCVDownloader:
 
             print()
 
+    def get_markets(self):
+        """Get the list of markets (symbols) available on Binance."""
+        return self.exchange.load_markets()
+
     def _instantiate_exchange(self):
         self.exchange = ccxt.binance(
             {
@@ -95,9 +99,6 @@ class BinanceOHLCVDownloader:
                 "enableRateLimit": True,
             }
         )
-
-    def get_markets(self):
-        return self.exchange.load_markets()
 
     def _fetch_ohlcv(self, symbol, start, end, timeframe="1h"):
         """Call the GET /api/v3/klines method of Binance API."""
@@ -146,6 +147,16 @@ async def main():
     timeframe = TIMEFRAMES[4]
 
     downloader = BinanceOHLCVDownloader()
+    binance_markets = await downloader.get_markets()
+    available_symbols = list(binance_markets)
+
+    # Check if all symbols are available on Binance. If not, raise an exception showing the missing symbols
+    missing_symbols = set(symbols) - set(available_symbols)
+    if missing_symbols:
+        raise OHLCVDownloaderException(
+            f"Some symbols are not available on Binance: {missing_symbols}."
+        )
+
     try:
         await asyncio.gather(
             *[
