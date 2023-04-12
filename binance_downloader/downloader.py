@@ -11,58 +11,21 @@ import pytz
 from ccxt.base.errors import BadSymbol
 
 from binance_downloader import settings, utils
+from binance_downloader.utils import timeit
 
 
 class OHLCVDownloaderException(Exception):
-    """Exception raised by the OHLCVDownloader class."""
+    """Exception raised by the BinanceOHLCVDownloader class."""
 
 
-class OHLCVDownloader:
+class BinanceOHLCVDownloader:
     """Downloader for OHLCV klines."""
 
     def __init__(self, limit: int = 500) -> None:
         self.limit = limit
-
-        # self._exchange_id = 'binance'
         self._markets = None
 
         self._instantiate_exchange()
-
-    # def _get_exchange_class(self):
-    #     """Get the CCXT exchange class."""
-
-    #     return getattr(ccxt, self._exchange_id)
-
-    def _instantiate_exchange(self):
-        # exchange_class = self._get_exchange_class()
-        self.exchange = ccxt.binance(
-            {
-                "apiKey": settings.BINANCE_API_KEY,
-                "secret": settings.BINANCE_API_SECRET,
-                "timeout": 30000,
-                "enableRateLimit": True,
-            }
-        )
-
-    def get_markets(self):
-        return self.exchange.load_markets()
-
-    def _fetch_ohlcv(self, symbol, start, end, timeframe="1h"):
-        """Call the GET /api/v3/klines method of Binance API."""
-
-        # Binance has a specific end time parameter. This makes the class not generic!
-        params = {"endTime": end}  # TODO: it seems like this does not work
-
-        try:
-            return self.exchange.fetch_ohlcv(
-                symbol,
-                timeframe=timeframe,
-                since=start,
-                limit=self.limit,
-                params=params,
-            )
-        except BadSymbol as ex:
-            raise OHLCVDownloaderException(ex) from ex
 
     async def fetch_ohlcv(self, symbol, start_date, end_date, timeframe="1h"):
         """Download OHCLV data (klines).
@@ -107,21 +70,35 @@ class OHLCVDownloader:
 
             print()
 
+    def _instantiate_exchange(self):
+        self.exchange = ccxt.binance(
+            {
+                "apiKey": settings.BINANCE_API_KEY,
+                "secret": settings.BINANCE_API_SECRET,
+                "timeout": 30000,
+                "enableRateLimit": True,
+            }
+        )
 
-import time
+    def get_markets(self):
+        return self.exchange.load_markets()
 
+    def _fetch_ohlcv(self, symbol, start, end, timeframe="1h"):
+        """Call the GET /api/v3/klines method of Binance API."""
 
-# Create a decorator to time the function
-def timeit(method):
-    async def timed(*args, **kw):
-        start = time.time()
-        result = await method(*args, **kw)
-        end = time.time()
+        # Binance has a specific end time parameter. This makes the class not generic!
+        params = {"endTime": end}  # TODO: it seems like this does not work
 
-        print("%r (%r, %r) %2.2f sec" % (method.__name__, args, kw, end - start))
-        return result
-
-    return timed
+        try:
+            return self.exchange.fetch_ohlcv(
+                symbol,
+                timeframe=timeframe,
+                since=start,
+                limit=self.limit,
+                params=params,
+            )
+        except BadSymbol as ex:
+            raise OHLCVDownloaderException(ex) from ex
 
 
 @timeit
@@ -152,7 +129,7 @@ async def main():
     ]
     timeframe = TIMEFRAMES[4]
 
-    downloader = OHLCVDownloader()
+    downloader = BinanceOHLCVDownloader()
     try:
         await asyncio.gather(
             *[

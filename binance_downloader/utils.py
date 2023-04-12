@@ -1,5 +1,6 @@
 import csv
 import datetime
+import time
 from pathlib import Path
 
 OHLCV_FIELDNAMES = ["timestamp", "open", "high", "low", "close", "volume"]
@@ -25,3 +26,16 @@ def write_data_to_file(data: list[list], output_filename: Path):
         if keep_header:
             writer.writeheader()
         writer.writerows(rows)
+
+
+def timeit(method):
+    """Decorator to measure the execution time of an async function (coroutine)."""
+    async def timed(*args, **kw):
+        start = time.time()
+        result = await method(*args, **kw)
+        end = time.time()
+
+        print("%r (%r, %r) %2.2f sec" % (method.__name__, args, kw, end - start))
+        return result
+
+    return timed
