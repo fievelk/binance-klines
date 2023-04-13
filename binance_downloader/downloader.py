@@ -171,9 +171,7 @@ async def main():
         #     await _download_single_symbol(downloader, symbol, start_date, end_date, timeframe)
     finally:
         # Binance requires to release all resources with an explicit call to the .close()
-        # coroutine. If you are using the exchange instance with async coroutines, add
-        # `await exchange.close()` to your code into a place when you're done with the
-        # exchange and don't need the exchange instance anymore (at the end of your a
+        # coroutine when you don't need the exchange instance anymore (at the end of your a
         # sync coroutine).
         await downloader.exchange.close()
 

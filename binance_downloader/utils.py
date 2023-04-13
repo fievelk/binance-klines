@@ -30,12 +30,12 @@ def write_data_to_file(data: list[list], output_filename: Path):
 
 def timeit(method):
     """Decorator to measure the execution time of an async function (coroutine)."""
-    async def timed(*args, **kw):
+    async def timed(*args, **kwargs):
         start = time.time()
-        result = await method(*args, **kw)
+        result = await method(*args, **kwargs)
         end = time.time()
 
-        print("%r (%r, %r) %2.2f sec" % (method.__name__, args, kw, end - start))
+        print(f"[Time] {method.__name__} ({args!r}, {kwargs!r}): {end-start:2.2f} sec")
         return result
 
     return timed
