@@ -4,6 +4,7 @@ Fetch OHLCV klines from Binance.
 
 """
 import datetime
+import logging
 from pathlib import Path
 
 import ccxt.async_support as ccxt  # link against the asynchronous version of ccxt
@@ -13,6 +14,8 @@ from ccxt.base.errors import BadSymbol
 from binance_downloader import settings, utils
 from binance_downloader.constants import AVAILABLE_TIMEFRAMES
 from binance_downloader.utils import timeit
+
+LOGGER = logging.getLogger(__name__)
 
 
 class OHLCVDownloaderException(Exception):
@@ -89,7 +92,9 @@ class BinanceOHLCVDownloader:
 
     def get_markets(self):
         """Get the list of markets (symbols) available on Binance."""
+        LOGGER.info("Loading markets from Binance...")
         return self.exchange.load_markets()
+        LOGGER.info("Markets loaded.")
 
     def _instantiate_exchange(self):
         self.exchange = ccxt.binance(
