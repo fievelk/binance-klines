@@ -119,6 +119,18 @@ class BinanceOHLCVDownloader:
             raise OHLCVDownloaderException(ex) from ex
 
 
+async def _download_single_symbol(downloader, symbol, start_date, end_date, timeframe):
+    print(f"Downloading symbol {symbol}")
+    output_filename = Path(f"{symbol.replace('/', '_')}-{timeframe}.csv")
+    try:
+        async for batch in downloader.fetch_ohlcv(
+            symbol, start_date, end_date, timeframe=timeframe
+        ):
+            utils.write_data_to_file(batch, output_filename)
+    except OHLCVDownloaderException as ex:
+        print(ex)
+
+
 @timeit
 async def main():
     start_date = datetime.datetime(2020, 9, 1).replace(
@@ -163,18 +175,6 @@ async def main():
         # coroutine when you don't need the exchange instance anymore (at the end of your a
         # sync coroutine).
         await downloader.exchange.close()
-
-
-async def _download_single_symbol(downloader, symbol, start_date, end_date, timeframe):
-    print(f"Downloading symbol {symbol}")
-    output_filename = Path(f"{symbol.replace('/', '_')}-{timeframe}.csv")
-    try:
-        async for batch in downloader.fetch_ohlcv(
-            symbol, start_date, end_date, timeframe=timeframe
-        ):
-            utils.write_data_to_file(batch, output_filename)
-    except OHLCVDownloaderException as ex:
-        print(ex)
 
 
 if __name__ == "__main__":
