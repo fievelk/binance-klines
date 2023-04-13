@@ -13,9 +13,9 @@ def write_data_to_file(data: list[list], output_filename: Path):
     for ohlcv in data:
         row = dict(zip(OHLCV_FIELDNAMES, ohlcv))
         # Convert the timestamp (in ms) to datetime (e.g.: 2020-01-01 00:00:00)
-        row["timestamp"] = datetime.datetime.fromtimestamp(
-            row["timestamp"] / 1000
-        ).strftime("%Y-%m-%d %H:%M:%S")
+        row["timestamp"] = datetime.datetime.fromtimestamp(row["timestamp"] / 1000).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
 
         rows.append(row)
 
@@ -30,11 +30,11 @@ def write_data_to_file(data: list[list], output_filename: Path):
 
 def timeit(method):
     """Decorator to measure the execution time of an async function (coroutine)."""
+
     async def timed(*args, **kwargs):
         start = time.time()
         result = await method(*args, **kwargs)
         end = time.time()
-
         print(f"[Time] {method.__name__} ({args!r}, {kwargs!r}): {end-start:2.2f} sec")
         return result
 
