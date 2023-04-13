@@ -26,3 +26,6 @@ line_length = 99
 
 [tool.isort]
 profile = "black"
+
+[tool.poetry.scripts]
+binance_downloader = "binance_downloader.cli:main"
