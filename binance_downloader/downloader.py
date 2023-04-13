@@ -13,6 +13,24 @@ from ccxt.base.errors import BadSymbol
 from binance_downloader import settings, utils
 from binance_downloader.utils import timeit
 
+AVAILABLE_TIMEFRAMES = [
+        "1m",
+        "3m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "4h",
+        "6h",
+        "8h",
+        "12h",
+        "1d",
+        "3d",
+        "1w",
+        "1M",
+    ]
+
 
 class OHLCVDownloaderException(Exception):
     """Exception raised by the BinanceOHLCVDownloader class."""
@@ -123,28 +141,16 @@ async def main():
     start_date = datetime.datetime(2020, 9, 1).replace(
         tzinfo=pytz.utc
     )  #  Add UTC timezone
-    end_date = datetime.datetime(2021, 9, 1).replace(
+    end_date = datetime.datetime(2020, 11, 1).replace(
         tzinfo=pytz.utc
     )  #  Add UTC timezone
     symbols = ["BTC/USDT", "ETH/USDT", "LTC/USDT"]
-    TIMEFRAMES = [
-        "1m",
-        "3m",
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "4h",
-        "6h",
-        "8h",
-        "12h",
-        "1d",
-        "3d",
-        "1w",
-        "1M",
-    ]
-    timeframe = TIMEFRAMES[4]
+    timeframe = "30m"
+
+    if timeframe not in AVAILABLE_TIMEFRAMES:
+        raise OHLCVDownloaderException(
+            f"Invalid timeframe: {timeframe}. Available timeframes: {AVAILABLE_TIMEFRAMES}"
+        )
 
     downloader = BinanceOHLCVDownloader()
     binance_markets = await downloader.get_markets()
