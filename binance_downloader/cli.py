@@ -18,6 +18,7 @@ from binance_downloader.downloader import (
     OHLCVDownloaderException,
 )
 
+logging.basicConfig(format="[%(levelname)s] %(message)s")
 LOGGER = logging.getLogger(__name__)
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"  # e.g. 2019-11-16 23:16:15
@@ -103,13 +104,11 @@ def _convert_to_datetime(date_str: str) -> datetime.datetime:
 def parse_cli_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-d",
-        "--debug",
-        help="Activates debug mode",
-        action="store_const",
-        dest="loglevel",
-        const=logging.DEBUG,
-        default=logging.WARNING,
+        "-v",
+        "--verbose",
+        action="count",
+        default=0,
+        help="Increase output verbosity. -v: INFO, -vv: DEBUG. Default: WARNING.",
     )
     parser.add_argument(
         "--start-date",
@@ -145,15 +144,21 @@ def parse_cli_arguments():
     return parser.parse_args()
 
 
-def _configure_logger(loglevel):
-    """Configure logging levels."""
-    logging.basicConfig(format="[%(levelname)s] %(message)s")
+def _configure_logger(verbosity_level: int):
+    """Configure logging levels.
+
+    Args:
+        verbosity_level: The number of times the -v flag has been passed.
+            0: WARNING, 1: INFO, 2: DEBUG.
+    """
+    loglevels = [logging.WARNING, logging.INFO, logging.DEBUG]
+    loglevel = loglevels[min(verbosity_level, len(loglevels) - 1)]  # Cap to the number of levels
     LOGGER.setLevel(loglevel)
 
 
 def main():
     arguments = parse_cli_arguments()
-    _configure_logger(arguments.loglevel)
+    _configure_logger(arguments.verbose)
     asyncio.run(
         run_downloader(
             symbols=arguments.symbols,
