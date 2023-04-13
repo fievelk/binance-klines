@@ -112,14 +112,14 @@ class BinanceOHLCVDownloader:
             }
         )
 
-    def _fetch_ohlcv(self, symbol, start, end, timeframe="1h"):
+    async def _fetch_ohlcv(self, symbol, start, end, timeframe="1h"):
         """Call the GET /api/v3/klines method of Binance API."""
 
         # Binance has a specific end time parameter. This makes the class not generic!
         params = {"endTime": end}  # TODO: it seems like this does not work
 
         try:
-            return self.exchange.fetch_ohlcv(
+            return await self.exchange.fetch_ohlcv(
                 symbol,
                 timeframe=timeframe,
                 since=start,
