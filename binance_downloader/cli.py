@@ -31,7 +31,7 @@ async def run_downloader(symbols, start_date, end_date, timeframe, output_dir):
     #         f"Invalid timeframe: {timeframe}. Available timeframes: {AVAILABLE_TIMEFRAMES}"
     #     )
 
-    downloader = BinanceOHLCVDownloader()
+    downloader = BinanceOHLCVDownloader(logger=LOGGER)
     # TODO: move in the downloader class?
     binance_markets = await downloader.get_markets()
     available_symbols = list(binance_markets)
@@ -103,6 +103,15 @@ def _convert_to_datetime(date_str: str) -> datetime.datetime:
 def parse_cli_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "-d",
+        "--debug",
+        help="Activates debug mode",
+        action="store_const",
+        dest="loglevel",
+        const=logging.DEBUG,
+        default=logging.WARNING,
+    )
+    parser.add_argument(
         "--start-date",
         default=datetime.datetime(2020, 9, 1).strftime(DATE_FORMAT),
         help="Start downloading data from this date. E.g.: 2019-01-24 00:00:00",
@@ -136,8 +145,15 @@ def parse_cli_arguments():
     return parser.parse_args()
 
 
+def _configure_logger(loglevel):
+    """Configure logging levels."""
+    logging.basicConfig(format="[%(levelname)s] %(message)s")
+    LOGGER.setLevel(loglevel)
+
+
 def main():
     arguments = parse_cli_arguments()
+    _configure_logger(arguments.loglevel)
     asyncio.run(
         run_downloader(
             symbols=arguments.symbols,

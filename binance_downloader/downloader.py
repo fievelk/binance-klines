@@ -15,8 +15,6 @@ from binance_downloader import settings, utils
 from binance_downloader.constants import AVAILABLE_TIMEFRAMES
 from binance_downloader.utils import timeit
 
-LOGGER = logging.getLogger(__name__)
-
 
 class OHLCVDownloaderException(Exception):
     """Exception raised by the BinanceOHLCVDownloader class."""
@@ -29,9 +27,10 @@ class BinanceOHLCVDownloader:
         limit (int, optional): Number of klines to fetch per request. Defaults to 500.
     """
 
-    def __init__(self, limit: int = 500) -> None:
+    def __init__(self, limit: int = 500, logger=None) -> None:
         self.limit = limit
         self._markets = None
+        self._logger = logger or logging.getLogger(__name__)
 
         self._instantiate_exchange()
 
@@ -92,9 +91,11 @@ class BinanceOHLCVDownloader:
 
     def get_markets(self):
         """Get the list of markets (symbols) available on Binance."""
-        LOGGER.info("Loading markets from Binance...")
-        return self.exchange.load_markets()
-        LOGGER.info("Markets loaded.")
+        self._logger.info("Loading markets from Binance...")
+        markets = self.exchange.load_markets()
+        self._logger.info("Markets loaded.")
+
+        return markets
 
     def _instantiate_exchange(self):
         self.exchange = ccxt.binance(
