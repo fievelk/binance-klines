@@ -26,12 +26,6 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"  # e.g. 2019-11-16 23:16:15
 
 @utils.timeit
 async def run_downloader(symbols, start_date, end_date, timeframe, output_dir):
-    # TODO: re-run the same check in the downloader class
-    # if timeframe not in AVAILABLE_TIMEFRAMES:
-    #     raise OHLCVDownloaderException(
-    #         f"Invalid timeframe: {timeframe}. Available timeframes: {AVAILABLE_TIMEFRAMES}"
-    #     )
-
     downloader = BinanceOHLCVDownloader(logger=LOGGER)
     # TODO: move in the downloader class?
     binance_markets = await downloader.get_markets()

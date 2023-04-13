@@ -64,6 +64,11 @@ class BinanceOHLCVDownloader:
         assert start_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
         assert end_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
 
+        if timeframe not in AVAILABLE_TIMEFRAMES:
+            raise OHLCVDownloaderException(
+                f"Invalid timeframe: {timeframe}. Available timeframes: {AVAILABLE_TIMEFRAMES}"
+            )
+
         # Convert UTC dates to timestamps in milliseconds (needed by Binance API)
         start_date_timestamp = int(start_date.timestamp()) * 1000  # Milliseconds
         end_date_timestamp = int(end_date.timestamp()) * 1000  # Milliseconds
