@@ -1,4 +1,4 @@
-# BinanceKlines
+# BinanceKlines downloader
 
 BinanceKlines downloader is a CLI tool and Python library used to download OHLCV k-lines from Binance. It works asynchronously to download candlestick market data from multiple symbols concurrently.
 
