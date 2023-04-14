@@ -75,10 +75,7 @@ class BinanceKLinesDownloader:
 
         if self.exchange.has["fetchOrders"]:
             since = start_date_timestamp
-            i = 0
             while since < end_date_timestamp:
-                i += 1
-                print(f"{symbol} - Iteration {i}", end="\r")
                 klines_batch = await self._fetch_ohlcv(
                     symbol, timeframe=timeframe, start=since, end=end_date_timestamp
                 )
@@ -91,8 +88,6 @@ class BinanceKLinesDownloader:
                     break
 
                 yield klines_batch
-
-            print()
 
     def get_markets(self):
         """Get the list of markets (symbols) available on Binance."""
