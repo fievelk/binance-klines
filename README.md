@@ -1,8 +1,6 @@
-# README
+# BinanceKlines
 
-## Binance Downloader
-
-Binance Downloader is a CLI tool and Python library used to download historical OHLCV klines from Binance. It works asynchronously to download data from multiple symbols concurrently.
+BinanceKlines downloader is a CLI tool and Python library used to download OHLCV k-lines from Binance. It works asynchronously to download candlestick market data from multiple symbols concurrently.
 
 
 ### Prerequisites
@@ -19,15 +17,15 @@ Binance Downloader is a CLI tool and Python library used to download historical 
 
 ### Usage
 
-The tool can be used as a command line tool or as a python module.
+BinanceKlines can be used both as command line tool and python module.
 
 #### From command line
 
 ```sh
 # To check the available CLI options
-binance_downloader --help
+binance-klines --help
 # To download data
-binance_downloader --start-date "2022-07-18 00:00:00" \
+binance-klines --start-date "2022-07-18 00:00:00" \
     --end-date "2022-07-20 23:59:00" --timeframe '1m' --output-dir .data/ \
     --symbols BTC/USDT ETH/USDT
 ```
@@ -38,10 +36,10 @@ binance_downloader --start-date "2022-07-18 00:00:00" \
 import asyncio
 import datetime
 
-from binance_downloader import BinanceOHLCVDownloader
+from binance_klines import BinanceKLinesDownloader
 
 async def main():
-    downloader = BinanceOHLCVDownloader()
+    downloader = BinanceKLinesDownloader()
     start_date = datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc)
     end_date = datetime.datetime(2020, 9, 2).replace(tzinfo=pytz.utc)
 

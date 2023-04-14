@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """Synchronous downloader script."""
 
 import argparse
@@ -12,11 +9,8 @@ from pathlib import Path
 
 import pytz
 
-from binance_downloader import constants, utils
-from binance_downloader.downloader import (
-    BinanceOHLCVDownloader,
-    OHLCVDownloaderException,
-)
+from binance_klines import constants, utils
+from binance_klines.downloader import BinanceKLinesDownloader, DownloaderException
 
 logging.basicConfig(format="[%(levelname)s] %(message)s")
 LOGGER = logging.getLogger(__name__)
@@ -26,16 +20,14 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"  # e.g. 2019-11-16 23:16:15
 
 @utils.timeit
 async def run_downloader(symbols, start_date, end_date, timeframe, output_dir):
-    downloader = BinanceOHLCVDownloader(logger=LOGGER)
+    downloader = BinanceKLinesDownloader(logger=LOGGER)
     # TODO: move in the downloader class?
     binance_markets = await downloader.get_markets()
     available_symbols = list(binance_markets)
     # Check if all symbols are available on Binance
     missing_symbols = set(symbols) - set(available_symbols)
     if missing_symbols:
-        raise OHLCVDownloaderException(
-            f"Some symbols are not available on Binance: {missing_symbols}."
-        )
+        raise DownloaderException(f"Some symbols are not available on Binance: {missing_symbols}.")
 
     try:
         await asyncio.gather(
@@ -62,7 +54,7 @@ async def _download_single_symbol(downloader, symbol, start_date, end_date, time
             symbol, start_date, end_date, timeframe=timeframe
         ):
             utils.write_data_to_file(batch, output_filename)
-    except OHLCVDownloaderException as ex:
+    except DownloaderException as ex:
         print(ex)
 
 

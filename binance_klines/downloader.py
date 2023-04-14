@@ -11,16 +11,16 @@ import ccxt.async_support as ccxt  # link against the asynchronous version of cc
 import pytz
 from ccxt.base.errors import BadSymbol
 
-from binance_downloader import settings, utils
-from binance_downloader.constants import AVAILABLE_TIMEFRAMES
-from binance_downloader.utils import timeit
+from binance_klines import settings, utils
+from binance_klines.constants import AVAILABLE_TIMEFRAMES
+from binance_klines.utils import timeit
 
 
-class OHLCVDownloaderException(Exception):
-    """Exception raised by the BinanceOHLCVDownloader class."""
+class DownloaderException(Exception):
+    """Exception raised by the BinanceKLinesDownloader class."""
 
 
-class BinanceOHLCVDownloader:
+class BinanceKLinesDownloader:
     """Downloader for OHLCV klines.
 
     Args:
@@ -65,7 +65,7 @@ class BinanceOHLCVDownloader:
         assert end_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
 
         if timeframe not in AVAILABLE_TIMEFRAMES:
-            raise OHLCVDownloaderException(
+            raise DownloaderException(
                 f"Invalid timeframe: {timeframe}. Available timeframes: {AVAILABLE_TIMEFRAMES}"
             )
 
@@ -127,4 +127,27 @@ class BinanceOHLCVDownloader:
                 params=params,
             )
         except BadSymbol as ex:
-            raise OHLCVDownloaderException(ex) from ex
+            raise DownloaderException(ex) from ex
+
+
+async def main():
+    import datetime
+
+    downloader = BinanceKLinesDownloader()
+    try:
+        async for batch in downloader.fetch_ohlcv(
+            symbol="BTC/USDT",
+            start_date=datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc),
+            end_date=datetime.datetime(2020, 9, 2).replace(tzinfo=pytz.utc),
+            timeframe="30m",
+        ):
+            print(batch)
+    finally:
+        await downloader.exchange.close()
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(main())
+    # main()

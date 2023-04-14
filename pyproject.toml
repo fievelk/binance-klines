@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Pierpaolo Pantone <24alsecondo@gmail.com>"]
 readme = "README.md"
-packages = [{include = "binance_downloader"}]
+packages = [{include = "binance_klines"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -28,4 +28,4 @@ line_length = 99
 profile = "black"
 
 [tool.poetry.scripts]
-binance_downloader = "binance_downloader.cli:main"
+binance-klines = "binance_klines.cli:main"
