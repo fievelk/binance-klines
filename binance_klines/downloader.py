@@ -123,26 +123,3 @@ class BinanceKLinesDownloader:
             )
         except BadSymbol as ex:
             raise DownloaderException(ex) from ex
-
-
-async def main():
-    import datetime
-
-    downloader = BinanceKLinesDownloader()
-    try:
-        async for batch in downloader.fetch_ohlcv(
-            symbol="BTC/USDT",
-            start_date=datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc),
-            end_date=datetime.datetime(2020, 9, 2).replace(tzinfo=pytz.utc),
-            timeframe="30m",
-        ):
-            print(batch)
-    finally:
-        await downloader.exchange.close()
-
-
-if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(main())
-    # main()
