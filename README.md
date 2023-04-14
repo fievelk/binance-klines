@@ -5,7 +5,7 @@ BinanceKlines downloader is a CLI tool and Python library used to download OHLCV
 
 ### Prerequisites
 
-- Python >= 3.11
+- Python >= 3.9
 - Binance API Keys
 
 
@@ -21,11 +21,10 @@ BinanceKlines can be used both as command line tool and python module.
 
 #### From command line
 
-```sh
-# To check the available CLI options
-binance-klines --help
-# To download data
-binance-klines --start-date "2022-07-18 00:00:00" \
+You can check all the available options using `binance-klines --help`. Here is an example of how to download 1-minutes candlestick data for BTC/USDT and ETH/USDT from 18th July 2022 to 20th July 2022:
+
+```console
+$ binance-klines --start-date "2022-07-18 00:00:00" \
     --end-date "2022-07-20 23:59:00" --timeframe '1m' --output-dir .data/ \
     --symbols BTC/USDT ETH/USDT
 ```
@@ -57,4 +56,13 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+```
+
+## Tests
+
+Tests are written using `pytest`. To test compatibility among several Python versions, install the dev dependencies using Poetry and run tests using tox:
+
+```console
+$ poetry install --with dev
+$ tox
 ```
