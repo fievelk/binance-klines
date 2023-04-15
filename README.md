@@ -29,14 +29,18 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -v, --verbose         Increase output verbosity. -v: INFO, -vv: DEBUG. Default: WARNING.
+  -v, --verbose         Increase output verbosity. -v: INFO, -vv: DEBUG.
+                        Default: WARNING.
   --start-date START_DATE
-                        Start downloading data from this date. E.g.: 2019-01-24 00:00:00
-  --end-date END_DATE   Download data up to this date. E.g.: 2020-05-30 00:00:00. Default: now.
+                        (Required) Start downloading data from this date. E.g.: 2019-01-24 00:00:00
+  --end-date END_DATE   Download data up to this date. E.g.: 2020-05-30 00:00:00.
+                        Default: now.
   --output-dir OUTPUT_DIR
-                        The data directory to store the output CSV files. Default: the current directory.
+                        The data directory to store the output CSV files.
+                        Default: the current directory.
   --timeframe {1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M}
-                        The frequency of the OHLCV data to be downloaded. Default: 1h.
+                        The frequency of the OHLCV data to be downloaded.
+                        Default: 1h.
 ```
 
 Here is an example of how to download 1-minutes candlestick data for BTC/USDT and ETH/USDT from 18th July 2022 to 20th July 2022:
