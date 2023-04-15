@@ -13,7 +13,7 @@ $ pip install .
 
 ## Usage
 
-BinanceKlines can be used both as command line tool and python module. The package fetches data from Binance's [`GET /api/v3/klines`](https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data) endpoint. Since this endpoint is [flagged as `SECURITY_TYPE = NONE`](https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type) in Binance docs, it is not necessary to provide an API key to download the data.
+BinanceKlines can be used both as command line tool and Python module. The tool fetches data from Binance's [`GET /api/v3/klines`](https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data) endpoint.
 
 
 ### From command line
