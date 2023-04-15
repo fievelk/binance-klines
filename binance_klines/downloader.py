@@ -11,9 +11,7 @@ import ccxt.async_support as ccxt  # link against the asynchronous version of cc
 import pytz
 from ccxt.base.errors import BadSymbol
 
-from binance_klines import settings, utils
 from binance_klines.constants import AVAILABLE_TIMEFRAMES
-from binance_klines.utils import timeit
 
 
 class DownloaderException(Exception):
@@ -100,8 +98,6 @@ class BinanceKLinesDownloader:
     def _instantiate_exchange(self):
         self.exchange = ccxt.binance(
             {
-                "apiKey": settings.BINANCE_API_KEY,
-                "secret": settings.BINANCE_API_SECRET,
                 "timeout": 30000,
                 "enableRateLimit": True,
             }
