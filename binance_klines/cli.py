@@ -95,7 +95,7 @@ def parse_cli_arguments():
         "--verbose",
         action="count",
         default=0,
-        help="Increase output verbosity. -v: INFO, -vv: DEBUG. Default: WARNING.",
+        help="Increase output verbosity. -v: DEBUG. Default: INFO.",
     )
     parser.add_argument(
         "symbols",
@@ -136,9 +136,9 @@ def _configure_logger(verbosity_level: int):
 
     Args:
         verbosity_level: The number of times the -v flag has been passed.
-            0: WARNING, 1: INFO, 2: DEBUG.
+            0: INFO, 1: DEBUG.
     """
-    loglevels = [logging.WARNING, logging.INFO, logging.DEBUG]
+    loglevels = [logging.INFO, logging.DEBUG]
     loglevel = loglevels[min(verbosity_level, len(loglevels) - 1)]  # Cap to the number of levels
     LOGGER.setLevel(loglevel)
 
