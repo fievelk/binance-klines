@@ -98,34 +98,34 @@ def parse_cli_arguments():
         help="Increase output verbosity. -v: INFO, -vv: DEBUG. Default: WARNING.",
     )
     parser.add_argument(
+        "symbols",
+        nargs="+",
+        help="The list of currencies whose OHLCV will be fetched.",
+    )
+    parser.add_argument(
         "--start-date",
-        default=datetime.datetime(2020, 9, 1).strftime(DATE_FORMAT),
+        required=True,
         help="Start downloading data from this date. E.g.: 2019-01-24 00:00:00",
         type=_convert_to_datetime,
     )
     parser.add_argument(
         "--end-date",
         default=datetime.datetime.now(pytz.utc).strftime(DATE_FORMAT),
-        help="Download data up to this date. E.g.: 2020-05-30 00:00:00",
+        help="Download data up to this date. E.g.: 2020-05-30 00:00:00. Default: now.",
         type=_convert_to_datetime,
     )
     parser.add_argument(
         "--output-dir",
         type=_check_dir_path,
-        default=os.path.join(os.path.abspath(os.path.dirname(__file__))),
-        help="The data directory to store the output",
+        default=Path.cwd(),
+        help="The data directory to store the output CSV files. Default: the current directory.",
     )
     parser.add_argument(
         "--timeframe",
         type=str,
         default="1h",
         choices=constants.AVAILABLE_TIMEFRAMES,
-        help="The frequency of the OHLCV data to be downloaded",
-    )
-    parser.add_argument(
-        "--symbols",
-        nargs="+",
-        help="The list of currencies whose OHLCV will be fetched.",
+        help="The frequency of the OHLCV data to be downloaded. Default: 1h.",
     )
 
     return parser.parse_args()
