@@ -29,34 +29,7 @@ async def run_downloader(symbols, start_date, end_date, timeframe, output_dir):
     if missing_symbols:
         raise DownloaderException(f"Some symbols are not available on Binance: {missing_symbols}.")
 
-    try:
-        await asyncio.gather(
-            *[
-                _download_single_symbol(downloader, symbol, start_date, end_date, timeframe)
-                for symbol in symbols
-            ]
-        )
-        # This is the synchronous version (if you want to compare the performance)
-        # for symbol in symbols:
-        #     await _download_single_symbol(downloader, symbol, start_date, end_date, timeframe)
-    finally:
-        # Binance requires to release all resources with an explicit call to the .close()
-        # coroutine when you don't need the exchange instance anymore (at the end of your a
-        # sync coroutine).
-        await downloader.exchange.close()
-
-
-async def _download_single_symbol(downloader, symbol, start_date, end_date, timeframe):
-    LOGGER.info("Download in progress: %s", symbol)
-    output_filename = Path(f"{symbol.replace('/', '_')}-{timeframe}.csv")
-    try:
-        async for batch in downloader.fetch_ohlcv(
-            symbol, start_date, end_date, timeframe=timeframe
-        ):
-            utils.write_data_to_file(batch, output_filename)
-        LOGGER.info("Download finished: %s", symbol)
-    except DownloaderException as ex:
-        LOGGER.error("An error occurred while downloading %s: %s", symbol, ex)
+    await downloader.fetch_klines(symbols, start_date, end_date, timeframe)
 
 
 def _ask_confirmation() -> bool:
