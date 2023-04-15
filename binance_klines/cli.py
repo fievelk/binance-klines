@@ -146,6 +146,7 @@ def _configure_logger(verbosity_level: int):
 def main():
     arguments = parse_cli_arguments()
     _configure_logger(arguments.verbose)
+
     asyncio.run(
         run_downloader(
             symbols=arguments.symbols,

@@ -5,7 +5,6 @@ Fetch OHLCV klines from Binance.
 """
 import datetime
 import logging
-from pathlib import Path
 
 import ccxt.async_support as ccxt  # link against the asynchronous version of ccxt
 import pytz
@@ -59,6 +58,9 @@ class BinanceKLinesDownloader:
                 ]
 
         """
+        start_date = self._preprocess_date(start_date)
+        end_date = self._preprocess_date(end_date)
+
         assert start_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
         assert end_date.tzinfo == pytz.utc, "Dates must be in UTC timezone"
 
@@ -119,3 +121,16 @@ class BinanceKLinesDownloader:
             )
         except BadSymbol as ex:
             raise DownloaderException(ex) from ex
+
+    def _preprocess_date(self, date: datetime.datetime) -> datetime.datetime:
+        """Convert a datetime timezone to UTC."""
+        if date.tzinfo:
+            if int(date.utcoffset().total_seconds()) != 0:
+                self._logger.warning("The given date is not in UTC timezone. Converting to UTC.")
+                return date.astimezone(pytz.utc)
+            else:
+                return date
+
+        self._logger.warning("The given date is not timezone aware. Assuming UTC.")
+
+        return date.replace(tzinfo=pytz.utc)
