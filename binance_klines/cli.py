@@ -67,10 +67,10 @@ def _ask_confirmation() -> bool:
     return False
 
 
-def _check_dir_path(path: str | Path) -> str | Path:
+def _check_dir_path(path: str) -> str:
     """Check if path is a valid directory path."""
 
-    if os.path.exists(path):
+    if Path(path).exists():
         if _ask_confirmation():
             return path
 
