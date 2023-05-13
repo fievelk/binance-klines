@@ -100,5 +100,4 @@ $ tox
 - [ ] Use output_dir (currently not used)
 - [ ] Version and publish to PyPI
 - [ ] Change logging of utils.timeit to DEBUG
-- [ ] Replace os with pathlib
 - [ ] Remove ccxt and use aiohttp directly
