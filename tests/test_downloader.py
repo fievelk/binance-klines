@@ -1,5 +1,5 @@
 import datetime
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import ccxt.async_support as ccxt
 import pytest
@@ -17,12 +17,11 @@ def downloader(klines_batch: list[list]):
     exchange_mock = AsyncMock(spec=ccxt.binance)
     exchange_mock.fetch_ohlcv.return_value = klines_batch
     downloader.exchange = exchange_mock
-
     return downloader
 
-
 @pytest.mark.asyncio
-async def test_fetch_klines(downloader: BinanceKLinesDownloader, klines_batch: list[list]):
+@patch("binance_klines.downloader.write_data_to_file")
+async def test_fetch_klines(write_data_to_file_mock, downloader: BinanceKLinesDownloader, klines_batch: list[list]):
     """The fetch_klines method returns the klines batches from Binance."""
     start_date = datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc)
     start_timestamp = int(start_date.timestamp()) * 1000  # milliseconds
@@ -45,6 +44,7 @@ async def test_fetch_klines(downloader: BinanceKLinesDownloader, klines_batch: l
     )
 
     assert results[0][0] == klines_batch
+    write_data_to_file_mock.assert_called_once()
 
 
 @pytest.mark.asyncio

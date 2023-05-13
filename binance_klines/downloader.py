@@ -12,8 +12,8 @@ import ccxt.async_support as ccxt  # link against the asynchronous version of cc
 import pytz
 from ccxt.base.errors import BadSymbol
 
-from binance_klines import utils
 from binance_klines.constants import AVAILABLE_TIMEFRAMES
+from binance_klines.utils import write_data_to_file
 
 
 class DownloaderException(Exception):
@@ -109,7 +109,7 @@ class BinanceKLinesDownloader:
                 symbol, start_date, end_date, timeframe=timeframe
             ):
                 batches.append(batch)
-                utils.write_data_to_file(batch, output_filename)
+                write_data_to_file(batch, output_filename)
         except DownloaderException as ex:
             self._logger.error("An error occurred while downloading %s: %s", symbol, ex)
 
