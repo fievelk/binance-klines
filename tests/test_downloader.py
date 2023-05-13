@@ -1,5 +1,5 @@
 import datetime
-from unittest.mock import AsyncMock, MagicMock, PropertyMock
+from unittest.mock import AsyncMock
 
 import ccxt.async_support as ccxt
 import pytest
@@ -22,21 +22,19 @@ def downloader(klines_batch: list[list]):
 
 
 @pytest.mark.asyncio
-async def test_fetch_ohlcv(downloader):
-    """The fetch_ohlcv method returns the klines batches from Binance."""
+async def test_fetch_klines(downloader: BinanceKLinesDownloader, klines_batch: list[list]):
+    """The fetch_klines method returns the klines batches from Binance."""
     start_date = datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc)
     start_timestamp = int(start_date.timestamp()) * 1000  # milliseconds
     end_date = datetime.datetime(2020, 9, 2).replace(tzinfo=pytz.utc)
     end_timestamp = int(end_date.timestamp()) * 1000  # milliseconds
 
-    # Just iterate over the async generator to make sure it works
-    async for _ in downloader.fetch_ohlcv(
-        symbol="BTC/USDT",
+    results = await downloader.fetch_klines(
+        symbols=["BTC/USDT"],
         start_date=start_date,
         end_date=end_date,
         timeframe="30m",
-    ):
-        pass
+    )
 
     downloader.exchange.fetch_ohlcv.assert_called_once_with(
         "BTC/USDT",
@@ -46,23 +44,23 @@ async def test_fetch_ohlcv(downloader):
         params={"endTime": end_timestamp},
     )
 
+    assert results[0][0] == klines_batch
+
 
 @pytest.mark.asyncio
-async def test_fetch_ohlcv_wrong_timeframe(downloader):
-    """The fetch_ohlcv method raises an exception if the timeframe is not supported."""
+async def test_fetch_klines_wrong_timeframe(downloader: BinanceKLinesDownloader):
+    """The fetch_klines method raises an exception if the timeframe is not supported."""
     start_date = datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc)
     start_timestamp = int(start_date.timestamp()) * 1000  # milliseconds
     end_date = datetime.datetime(2020, 9, 2).replace(tzinfo=pytz.utc)
     end_timestamp = int(end_date.timestamp()) * 1000  # milliseconds
 
     with pytest.raises(DownloaderException):
-        # Just
-        async for _ in downloader.fetch_ohlcv(
-            symbol="BTC/USDT",
+        await downloader.fetch_klines(
+            symbols=["BTC/USDT"],
             start_date=start_date,
             end_date=end_date,
             timeframe="some-wrong-timeframe",
-        ):
-            pass
+        )
 
     downloader.exchange.fetch_ohlcv.assert_not_called()

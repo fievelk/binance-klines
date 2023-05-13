@@ -57,24 +57,29 @@ $ binance-klines --start-date "2022-07-18 00:00:00" \
 import asyncio
 import datetime
 
-from binance_klines import BinanceKLinesDownloader
+import pytz
+
+from binance_klines.downloader import BinanceKLinesDownloader
+
 
 async def main():
     downloader = BinanceKLinesDownloader()
     start_date = datetime.datetime(2020, 9, 1).replace(tzinfo=pytz.utc)
     end_date = datetime.datetime(2020, 9, 2).replace(tzinfo=pytz.utc)
 
-    try:
-        # Download data for a single symbol. Data is downloaded in batches.
-        async for batch in downloader.fetch_ohlcv(
-            symbol="BTC/USDT",
-            start_date=start_date,
-            end_date=end_date,
-            timeframe="30m",
-        ):
-            print(batch)
-    finally:
-        await downloader.exchange.close()
+    # Download data for a single symbol. Data is downloaded in batches.
+    results = await downloader.fetch_klines(
+        symbols=["BTC/USDT", "ETH/USDT"],
+        start_date=start_date,
+        end_date=end_date,
+        timeframe="30m",
+    )
+
+    # Results contain the klines for each symbol, in the order that was passed to the
+    # `symbols` argument.
+    btc_batches = results[0]
+    eth_batches = results[1]
+
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -85,6 +90,15 @@ if __name__ == "__main__":
 Tests are written using `pytest`. To test compatibility among several Python versions, install the dev dependencies using Poetry and run tests using tox:
 
 ```console
-$ poetry install --with dev
+$ poetry install --with dev  # Install dependencies
+$ poetry shell  # Activate Poetry environment
 $ tox
 ```
+
+# TODO
+
+- [ ] Use output_dir (currently not used)
+- [ ] Version and publish to PyPI
+- [ ] Change logging of utils.timeit to DEBUG
+- [ ] Replace os with pathlib
+- [ ] Remove ccxt and use aiohttp directly
