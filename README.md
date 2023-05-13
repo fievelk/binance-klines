@@ -95,6 +95,15 @@ $ poetry shell  # Activate Poetry environment
 $ tox
 ```
 
+## Contributing
+
+You are welcome to contribute by opening a PR with your improvements. Please make sure to run the Black linter before you do. You can use `tox` for this:
+
+```console
+$ tox -e lint
+```
+
+
 # TODO
 
 - [ ] Use output_dir (currently not used)
