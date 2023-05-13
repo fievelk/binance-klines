@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "binance-downloader"
+name = "binance-klines"
 version = "0.1.0"
 description = ""
 authors = ["Pierpaolo Pantone <24alsecondo@gmail.com>"]
