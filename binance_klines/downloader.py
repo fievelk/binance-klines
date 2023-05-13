@@ -76,7 +76,9 @@ class BinanceKLinesDownloader:
         try:
             results = await asyncio.gather(
                 *[
-                    self._fetch_and_store_klines_for_symbol(symbol, start_date, end_date, timeframe)
+                    self._fetch_and_store_klines_for_symbol(
+                        symbol, start_date, end_date, timeframe
+                    )
                     for symbol in symbols
                 ]
             )
