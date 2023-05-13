@@ -108,6 +108,5 @@ $ tox -e lint
 
 # TODO
 
-- [ ] Version and publish to PyPI
 - [ ] Change logging of utils.timeit to DEBUG
 - [ ] Remove ccxt and use aiohttp directly
