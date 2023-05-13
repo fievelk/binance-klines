@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "binance-klines"
-version = "0.1.0"
+version = "0.1.1"
 description = "BinanceKlines - A tool to download OHLCV candlestick data (K-Lines) from Binance. Written in Python."
 authors = ["Pierpaolo Pantone <24alsecondo@gmail.com>"]
 readme = "README.md"
