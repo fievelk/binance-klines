@@ -25,10 +25,15 @@ class BinanceKLinesDownloader:
 
     Args:
         limit (int, optional): Number of klines to fetch per request. Defaults to 500.
+        output_dir (str | Path, optional): Directory where to store the downloaded data.
+        logger (logging.Logger, optional): Logger to use. Defaults to None.
     """
 
-    def __init__(self, limit: int = 500, logger=None) -> None:
+    def __init__(
+        self, limit: int = 500, output_dir: str | Path = ".", logger: logging.Logger | None = None
+    ) -> None:
         self.limit = limit
+        self.output_dir = Path(output_dir)
         self._markets = None
         self._logger = logger or logging.getLogger(__name__)
 
@@ -95,7 +100,9 @@ class BinanceKLinesDownloader:
 
     async def _fetch_and_store_klines_for_symbol(self, symbol, start_date, end_date, timeframe):
         """Download and store OHCLV data (klines) for a single symbol."""
-        output_filename = Path(f"{symbol.replace('/', '_')}-{timeframe}.csv")
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        output_filename = self.output_dir / f"{symbol.replace('/', '_')}-{timeframe}.csv"
+
         batches = []
         try:
             async for batch in self._fetch_ohlcv_for_symbol(

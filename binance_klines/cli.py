@@ -19,7 +19,7 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"  # e.g. 2019-11-16 23:16:15
 
 @utils.timeit
 async def run_downloader(symbols, start_date, end_date, timeframe, output_dir):
-    downloader = BinanceKLinesDownloader(logger=LOGGER)
+    downloader = BinanceKLinesDownloader(output_dir=output_dir, logger=LOGGER)
     # TODO: move in the downloader class?
     binance_markets = await downloader.get_markets()
     available_symbols = list(binance_markets)
@@ -87,6 +87,7 @@ def parse_cli_arguments():
         type=_convert_to_datetime,
     )
     parser.add_argument(
+        "-o",
         "--output-dir",
         type=_check_dir_path,
         default=Path.cwd(),
